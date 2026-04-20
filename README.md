@@ -2,7 +2,7 @@
 
 PipelineX is a powerful, full-stack orchestration platform designed to define, visualize, and execute complex AI agent workflows. It allows developers to build AI pipelines using a simple YAML-based configuration, similar to GitHub Actions, but specifically tailored for LLM-powered tasks.
 
-## 🚀 Key Features
+##  Key Features
 
 - **YAML-Based Workflows**: Define your AI agents, tools, and execution logic in a clean, human-readable YAML format.
 - **Agentic Orchestration**: Powered by **LangGraph**, enabling complex state management and cyclic graph executions.
@@ -11,13 +11,13 @@ PipelineX is a powerful, full-stack orchestration platform designed to define, v
 - **Extensible Tool Registry**: Easily plug in custom tools like web search, code execution, and calculators.
 - **Dockerized Architecture**: Simplified deployment using Docker and Docker Compose.
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - **Backend**: Python 3.11+, FastAPI, LangGraph, PostgreSQL (asyncpg)
 - **Frontend**: React 18, TypeScript, Vite, React Flow, Tailwind CSS
 - **Infrastructure**: Docker, Docker Compose
 
-## 🏗 Project Structure
+##  Project Structure
 
 ```text
 llm-workflow-engine/
@@ -34,7 +34,7 @@ llm-workflow-engine/
 └── docker-compose.yml  # Full-stack orchestration
 ```
 
-## 🚦 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -62,7 +62,7 @@ llm-workflow-engine/
 
 The dashboard will be available at `http://localhost:5173` and the API documentation at `http://localhost:8000/docs`.
 
-## 📝 Example Workflow
+##  Example Workflow
 
 ```yaml
 name: research_and_write
@@ -81,5 +81,5 @@ edges:
     condition: always
 ```
 
-## 📄 License
+##  License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
