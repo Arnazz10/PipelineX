@@ -34,7 +34,7 @@ llm-workflow-engine/
 └── docker-compose.yml  # Full-stack orchestration
 ```
 
-##  Getting Started
+## Getting Started
 
 ### Prerequisites
 - Docker & Docker Compose
