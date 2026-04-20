@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import type { Execution, DAGNode, DAGEdge, ExecutionLog } from '../types';
+import type { Execution, DAGNode, DAGEdge } from '../types';
 import { useWorkflows } from '../hooks/useWorkflows';
 import { useExecution } from '../hooks/useExecution';
 import DAGVisualizer from './DAGVisualizer';
@@ -9,7 +9,6 @@ import * as yaml from 'js-yaml';
 const ExecutionDashboard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [execution, setExecution] = useState<Execution | null>(null);
-  const [logs, setLogs] = useState<ExecutionLog[]>([]);
   const [inputData, setInputData] = useState<string>('');
   const [status, setStatus] = useState<string>('idle');
   const [nodes, setNodes] = useState<DAGNode[]>([]);
@@ -53,7 +52,7 @@ const ExecutionDashboard: React.FC = () => {
   useEffect(() => {
     if (!id || status !== 'pending' && status !== 'running' && status !== 'success') return;
 
-    const ws = connectWebSocket(id, (msg: unknown) => {
+    connectWebSocket(id, (msg: unknown) => {
       const message = msg as { type?: string; status?: string; step?: unknown; outputs?: Record<string, unknown> };
       if (message.type === 'status') {
         setStatus(message.status || 'running');

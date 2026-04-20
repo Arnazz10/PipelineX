@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Execution, ExecutionCreate } from '../types';
+import type { Execution } from '../types';
 
 const API_BASE = '/api';
 

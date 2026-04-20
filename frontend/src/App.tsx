@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import { useWorkflows } from './hooks/useWorkflows';
 import WorkflowEditor from './components/WorkflowEditor';
 import DAGVisualizer from './components/DAGVisualizer';
@@ -113,7 +113,7 @@ const WorkflowList: React.FC = () => {
 };
 
 const WorkflowDetail: React.FC = () => {
-  const { id } = React.useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const { getWorkflow } = useWorkflows();
   const navigate = useNavigate();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);

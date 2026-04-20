@@ -1,79 +1,88 @@
-# PipelineX - LLM Workflow Orchestration Engine
+# LLM Workflow Orchestration Engine
 
-PipelineX is a powerful, full-stack orchestration platform designed to define, visualize, and execute complex AI agent workflows. It allows developers to build AI pipelines using a simple YAML-based configuration, similar to GitHub Actions, but specifically tailored for LLM-powered tasks.
+A workflow engine where users define AI pipelines in YAML (like GitHub Actions but for LLM tasks) — each node is an agent with tools. Built with Python, LangGraph, FastAPI, TypeScript, PostgreSQL, and YAML.
 
-##  Key Features
+## Features
 
-- **YAML-Based Workflows**: Define your AI agents, tools, and execution logic in a clean, human-readable YAML format.
-- **Agentic Orchestration**: Powered by **LangGraph**, enabling complex state management and cyclic graph executions.
-- **Live DAG Visualization**: A modern React-based interface with **React Flow** to visualize your workflow's Directed Acyclic Graph (DAG) in real-time.
-- **Real-time Monitoring**: WebSocket integration for streaming execution updates and logs.
-- **Extensible Tool Registry**: Easily plug in custom tools like web search, code execution, and calculators.
-- **Dockerized Architecture**: Simplified deployment using Docker and Docker Compose.
+- **YAML-based Workflows**: Define AI pipelines declaratively
+- **Agent System**: Each node is an LLM agent with tools
+- **DAG Visualization**: Live visualization of workflow execution
+- **WebSocket Streaming**: Real-time execution updates
+- **PostgreSQL Storage**: Persistent workflow and execution history
 
-##  Tech Stack
+## Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, LangGraph, PostgreSQL (asyncpg)
-- **Frontend**: React 18, TypeScript, Vite, React Flow, Tailwind CSS
-- **Infrastructure**: Docker, Docker Compose
+- **Backend**: Python 3.11+, FastAPI, LangGraph, SQLAlchemy, PostgreSQL
+- **Frontend**: TypeScript, React, React Flow (DAG visualization)
+- **Deployment**: Docker, Docker Compose
 
-##  Project Structure
+## Quick Start
 
-```text
-llm-workflow-engine/
-├── backend/            # FastAPI & LangGraph service
-│   ├── app/
-│   │   ├── api/        # REST & WebSocket endpoints
-│   │   ├── engine/     # YAML parser & Graph executor
-│   │   └── tools/      # Agent tool implementations
-├── frontend/           # React & React Flow dashboard
-│   ├── src/
-│   │   ├── components/ # DAG Visualizer & Editor
-│   │   └── hooks/      # API & WebSocket state management
-├── examples/           # Sample YAML workflow definitions
-└── docker-compose.yml  # Full-stack orchestration
+### With Docker Compose
+
+```bash
+# Start all services
+docker-compose up -d
+
+# The app will be available at:
+# - Frontend: http://localhost:5173
+# - Backend API: http://localhost:8000
+# - API Docs: http://localhost:8000/docs
 ```
 
-## Getting Started
+### Manual Setup
 
-### Prerequisites
-- Docker & Docker Compose
-- OpenAI API Key (or other supported LLM provider)
+```bash
+# Backend
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 
-### Installation
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Arnazz10/PipelineX.git
-   cd PipelineX
-   ```
+## API Endpoints
 
-2. **Set up Environment Variables**
-   Create a `.env` file in the root directory:
-   ```env
-   OPENAI_API_KEY=your_api_key_here
-   DATABASE_URL=postgresql+asyncpg://user:password@db:5432/pipelinex
-   ```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /workflows | Create workflow |
+| GET | /workflows | List workflows |
+| GET | /workflows/{id} | Get workflow |
+| PUT | /workflows/{id} | Update workflow |
+| DELETE | /workflows/{id} | Delete workflow |
+| POST | /workflows/{id}/execute | Execute workflow |
+| GET | /executions | List executions |
+| GET | /executions/{id} | Get execution |
+| GET | /ws/execute/{id} | WebSocket for updates |
 
-3. **Launch the platform**
-   ```bash
-   docker-compose up --build
-   ```
-
-The dashboard will be available at `http://localhost:5173` and the API documentation at `http://localhost:8000/docs`.
-
-##  Example Workflow
+## Example Workflow
 
 ```yaml
-name: research_and_write
+name: research_writer
+description: Research a topic and write a summary
+version: "1.0"
+
 agents:
   - id: researcher
     name: Research Agent
     model: gpt-4
-    tools: [web_search]
+    system_prompt: |
+      You are a research assistant. Given a topic, search the web
+      and provide key findings.
+    tools:
+      - web_search
+
   - id: writer
     name: Writer Agent
     model: gpt-4
+    system_prompt: |
+      You are a technical writer. Given research findings,
+      write a concise summary.
 
 edges:
   - from: researcher
@@ -81,5 +90,14 @@ edges:
     condition: always
 ```
 
-##  License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| DATABASE_URL | PostgreSQL connection string | postgresql://postgres:postgres@localhost:5432/postgres |
+| OPENAI_API_KEY | OpenAI API key | - |
+| DEBUG | Enable debug mode | true |
+
+## License
+
+MIT

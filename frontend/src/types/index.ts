@@ -48,6 +48,12 @@ export interface Workflow {
   updated_at: string;
 }
 
+export interface WorkflowCreate {
+  name: string;
+  description?: string;
+  definition: WorkflowDefinition;
+}
+
 export interface Execution {
   id: string;
   workflow_id: string;
@@ -57,6 +63,10 @@ export interface Execution {
   started_at?: string;
   completed_at?: string;
   error?: string;
+}
+
+export interface ExecutionCreate {
+  input_data: Record<string, unknown>;
 }
 
 export interface ExecutionLog {

@@ -1,7 +1,6 @@
 from typing import Any, Callable, Awaitable
-from langchain.tools import Tool
-from langchain_community.tools import DuckDuckGoSearchRun, YahooFinanceSearchRun
-from langchain_experimental.tools import PythonREPLTool
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_core.tools import tool
 import json
 
 
@@ -28,25 +27,39 @@ class ToolRegistry:
     def list_tools(self) -> list[str]:
         return list(self._tools.keys())
     
-    def get_langchain_tool(self, name: str) -> Tool:
+    def get_langchain_tool(self, name: str):
         if name == "web_search":
-            return Tool(
+            return tool(
                 name="web_search",
                 func=DuckDuckGoSearchRun().run,
                 description="Search the web for current information"
             )
         elif name == "calculator":
-            return Tool(
-                name="calculator",
-                func=self._calc_wrapper,
-                description="Perform mathematical calculations"
-            )
+            @tool(name="calculator")
+            def calc_tool(expression: str) -> str:
+                allowed_names = {
+                    "abs": abs, "min": min, "max": max, "round": round,
+                    "pow": pow, "sum": sum, "len": len
+                }
+                try:
+                    result = eval(expression, {"__builtins__": {}}, allowed_names)
+                    return str(result)
+                except Exception as e:
+                    return f"Error: {str(e)}"
+            return calc_tool
         elif name == "code_executor":
-            return Tool(
-                name="code_executor",
-                func=self._code_wrapper,
-                description="Execute Python code"
-            )
+            @tool(name="code_executor")
+            def code_tool(code: str) -> str:
+                try:
+                    import io
+                    from contextlib import redirect_stdout
+                    f = io.StringIO()
+                    with redirect_stdout(f):
+                        exec(code, {})
+                    return f.getvalue() or "Executed successfully"
+                except Exception as e:
+                    return f"Error: {str(e)}"
+            return code_tool
         else:
             raise ValueError(f"Tool '{name}' not available as LangChain tool")
     
