@@ -1,0 +1,40 @@
+name: content_moderation
+description: Moderate content with conditional processing
+version: "1.0"
+
+agents:
+  - id: classifier
+    name: Classifier
+    model: gpt-4
+    system_prompt: |
+      Classify the content as appropriate or inappropriate.
+      Return "appropriate" or "inappropriate" only.
+
+  - id: approver
+    name: Approver
+    model: gpt-4
+    system_prompt: |
+      Approve the content. Write a brief approval message.
+
+  - id: reporter
+    name: Reporter
+    model: gpt-4
+    system_prompt: |
+      Report inappropriate content. Explain what was flagged.
+
+edges:
+  - from: classifier
+    to: approver
+    condition: on_success
+  - from: classifier
+    to: reporter
+    condition: on_failure
+
+input:
+  - name: content
+    type: string
+    required: true
+
+output:
+  - name: status
+    type: string

@@ -1,0 +1,49 @@
+name: code_analysis_pipeline
+description: Analyze code and generate documentation
+version: "1.0"
+
+agents:
+  - id: analyzer
+    name: Code Analyzer
+    model: gpt-4
+    system_prompt: |
+      Analyze the provided code and identify its purpose,
+      key functions, and potential issues.
+    tools:
+      - code_executor
+
+  - id: documenter
+    name: Document Generator
+    model: gpt-4
+    system_prompt: |
+      Generate documentation for the analyzed code.
+      Include usage instructions and API reference.
+
+  - id: reviewer
+    name: Code Reviewer
+    model: gpt-4
+    system_prompt: |
+      Review the code for best practices, security issues,
+      and performance improvements.
+
+edges:
+  - from: analyzer
+    to: documenter
+    condition: always
+  - from: analyzer
+    to: reviewer
+    condition: always
+  - from: documenter
+    to: reviewer
+    condition: on_success
+
+input:
+  - name: code
+    type: string
+    required: true
+
+output:
+  - name: documentation
+    type: string
+  - name: review
+    type: string
